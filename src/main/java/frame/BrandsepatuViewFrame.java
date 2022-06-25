@@ -31,6 +31,19 @@ public class BrandsepatuViewFrame extends JFrame {
             batalButton.addActionListener(e -> {
                 isiTable();
             });
+        ubahButton.addActionListener(e -> {
+            int barisTerpilih = viewTable.getSelectedRow();
+            if (barisTerpilih < 0) {
+                JOptionPane.showMessageDialog(null, "Pilih Data dulu sanak ai");
+                return;
+            }
+            TableModel tm = viewTable.getModel();
+            int kode_brand = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
+            BrandsepatuInputFrame inputFrame = new BrandsepatuInputFrame();
+            inputFrame.setId(kode_brand);
+            inputFrame.isiKomponen();
+            inputFrame.setVisible(true);
+        });
 
             addWindowListener(new WindowAdapter() {
                 @Override
@@ -78,12 +91,12 @@ public class BrandsepatuViewFrame extends JFrame {
                 );
                 if (pilihan == 0) {
                     TableModel tm = viewTable.getModel();
-                    int id = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
+                    int kode_barang = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
                     Connection c = Koneksi.getConnection();
                     String deleteSQL = "DELETE FROM brand WHERE kode_brand = ?";
                     try {
                         PreparedStatement ps = c.prepareStatement(deleteSQL);
-                        ps.setInt(1, id);
+                        ps.setInt(1, kode_barang);
                         ps.executeUpdate();
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
