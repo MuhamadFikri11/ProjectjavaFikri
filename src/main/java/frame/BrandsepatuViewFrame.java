@@ -40,7 +40,7 @@ public class BrandsepatuViewFrame extends JFrame {
             });
 
             tambahButton.addActionListener(e -> {
-                BrandsepatuViewFrame inputFrame = new BrandsepatuViewFrame();
+                BrandsepatuInputFrame inputFrame = new BrandsepatuInputFrame();
                 inputFrame.setVisible(true);
             });
 
