@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="frame.SepatuViewFrame">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="16" left="16" bottom="16" right="16"/>
+    <constraints>
+      <xy x="20" y="20" width="539" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="df8ae" binding="cariPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="4a6c6" class="javax.swing.JLabel">
+            <constraints border-constraint="West"/>
+            <properties>
+              <text value="Cari Sepatu"/>
+            </properties>
+          </component>
+          <component id="f1c7" class="javax.swing.JTextField" binding="cariTextField">
+            <constraints border-constraint="Center"/>
+            <properties/>
+          </component>
+          <component id="c0846" class="javax.swing.JButton" binding="cariButton" default-binding="true">
+            <constraints border-constraint="East"/>
+            <properties>
+              <text value="Cari"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <scrollpane id="603da" binding="viewScrollPane">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="f0db4" class="javax.swing.JTable" binding="viewTable">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="b91b8" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="e0734" class="javax.swing.JButton" binding="tambahButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Tambah"/>
+            </properties>
+          </component>
+          <component id="ccef7" class="javax.swing.JButton" binding="ubahButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Ubah"/>
+            </properties>
+          </component>
+          <component id="dc72b" class="javax.swing.JButton" binding="hapusButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Hapus"/>
+            </properties>
+          </component>
+          <component id="f5876" class="javax.swing.JButton" binding="batalButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Batal"/>
+            </properties>
+          </component>
+          <component id="7864c" class="javax.swing.JButton" binding="cetakButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Cetak"/>
+            </properties>
+          </component>
+          <component id="e801c" class="javax.swing.JButton" binding="tutupButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Tutup"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

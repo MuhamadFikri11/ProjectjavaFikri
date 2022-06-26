@@ -112,7 +112,7 @@ public class BrandsepatuViewFrame extends JFrame {
 
         public void init() {
             setContentPane(mainPanel);
-            setTitle("Data Brandsepatu");
+            setTitle("Data Brand Sepatu");
             pack();
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setLocationRelativeTo(null);
