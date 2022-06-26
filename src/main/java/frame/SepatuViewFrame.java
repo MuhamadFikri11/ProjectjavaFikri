@@ -1,5 +1,6 @@
 package frame;
 
+import helpers.ComboBoxItem;
 import helpers.Koneksi;
 
 import javax.swing.*;
@@ -9,7 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.*;
 
-public class SepatuViewFrame extends JFrame{
+public class SepatuViewFrame extends JFrame {
     private JPanel mainPanel;
     private JPanel cariPanel;
     private JPanel buttonPanel;
@@ -24,7 +25,8 @@ public class SepatuViewFrame extends JFrame{
     private JButton cetakButton;
     private JButton tutupButton;
 
-    public SepatuViewFrame(){
+
+    public SepatuViewFrame() {
         tutupButton.addActionListener(e -> {
             dispose();
         });
@@ -61,17 +63,18 @@ public class SepatuViewFrame extends JFrame{
         cariButton.addActionListener(e -> {
             Connection c = Koneksi.getConnection();
             String keyword = "%" + cariTextField.getText() + "%";
-            String seachSQL = "SELECT * FROM sepatu WHERE nama like ?";
+            String searchSQL = "SELECT * K.*,B.nama AS nama_brandsepatu " +" FROM sepatu K " + "LEFT JOIN sepatu B ON K.kode_brand = B.kode_brand " + "WHERE K.nama like ?";
             try {
-                PreparedStatement ps = c.prepareStatement(seachSQL);
+                PreparedStatement ps = c.prepareStatement(searchSQL);
                 ps.setString(1, keyword);
                 ResultSet rs = ps.executeQuery();
                 DefaultTableModel dtm = (DefaultTableModel) viewTable.getModel();
                 dtm.setRowCount(0);
-                Object[] row = new Object[2];
+                Object[] row = new Object[3];
                 while (rs.next()) {
                     row[0] = rs.getInt("kode");
                     row[1] = rs.getString("nama");
+                    row[2] = rs.getString("nama_brandsepatu");
                     dtm.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -106,7 +109,6 @@ public class SepatuViewFrame extends JFrame{
         });
 
 
-
         isiTable();
         init();
     }
@@ -121,17 +123,20 @@ public class SepatuViewFrame extends JFrame{
 
     public void isiTable() {
         Connection c = Koneksi.getConnection();
-        String selectSQL = "SELECT * FROM sepatu";
+        String selectSQL = "SELECT K.*,B.nama AS nama_brandsepatu FROM sepatu K " +
+                "LEFT JOIN brandsepatu B ON K.kode_brand =B.kode_brand";
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"kode", "Nama Sepatu"};
+            String[] header = {"kode", "Nama Sepatu", "Nama Brand Sepatu"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
-            Object[] row = new Object[2];
+            viewTable.getColumnModel().getColumn(0).setMaxWidth(32);
+            Object[] row = new Object[3];
             while (rs.next()) {
                 row[0] = rs.getInt("kode");
                 row[1] = rs.getString("nama");
+                row[2] = rs.getString("nama_brandsepatu");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
