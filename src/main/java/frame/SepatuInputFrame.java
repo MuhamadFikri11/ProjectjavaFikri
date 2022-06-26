@@ -14,6 +14,11 @@ public class SepatuInputFrame extends JFrame {
     private JButton batalButton;
     private JButton simpanButton;
     private JComboBox brandComboBox;
+    private JRadioButton sepatuFutsalRadioButton;
+    private JRadioButton sepatuRunningRadioButton;
+    private JRadioButton sepatuSekolahRadioButton;
+
+    private ButtonGroup jenisButtonGrup;
 
     private int kode;
     public void setId(int kode){
@@ -39,6 +44,18 @@ public class SepatuInputFrame extends JFrame {
                 brandComboBox.requestFocus();
                 return;
             }
+            String jenis = "";
+            if(sepatuFutsalRadioButton.isSelected()){
+                jenis = "Sepatu Futsal";
+            } else if (sepatuRunningRadioButton.isSelected()) {
+                jenis = "Sepatu Running";
+            } else if (sepatuSekolahRadioButton.isSelected()) {
+                jenis = "Sepatu Sekolah";
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Pilih Jenis Sepatu","Validasi Kosong",JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             Connection c = Koneksi.getConnection();
             PreparedStatement ps;
             try {
@@ -50,10 +67,11 @@ public class SepatuInputFrame extends JFrame {
                     if (rs.next()) {
                         JOptionPane.showMessageDialog(null, "Data sama sudah ada");
                     } else {
-                        String insertSQL = "INSERT INTO sepatu (kode,nama,kode_brand) VALUES (NULL, ?,?)";
+                        String insertSQL = "INSERT INTO sepatu (kode,nama,kode_brand,jenis) " + "VALUES (NULL, ?,?, ?)";
                         ps = c.prepareStatement(insertSQL);
                         ps.setString(1, nama);
                         ps.setInt(2,kodeBrand);
+                        ps.setString(3,jenis);
                         ps.executeUpdate();
                         dispose();
                     }
@@ -67,11 +85,12 @@ public class SepatuInputFrame extends JFrame {
                     if (rs.next()) {
                         JOptionPane.showMessageDialog(null, "Data sama sudah ada");
                     } else {
-                        String updateSQL = "UPDATE sepatu SET nama= ?, kode_brand = ? WHERE kode= ?";
+                        String updateSQL = "UPDATE sepatu SET nama= ?, kode_brand = ?, jenis = ?" + "WHERE kode= ?";
                         ps = c.prepareStatement(updateSQL);
                         ps.setString(1, nama);
                         ps.setInt(2, kodeBrand);
-                        ps.setInt(3, kode);
+                        ps.setString(3, jenis);
+                        ps.setInt(4, kode);
                         ps.executeUpdate();
                         dispose();
                     }
@@ -103,6 +122,16 @@ public class SepatuInputFrame extends JFrame {
                         break;
                     }
                 }
+                String jenis = rs.getString( "jenis");
+                if(jenis !=null){
+                    if(jenis.equals("Sepatu Futsal")){
+                        sepatuFutsalRadioButton.setSelected(true);
+                    }else if(jenis.equals("Sepatu Running")){
+                        sepatuRunningRadioButton.setSelected(true);
+                    } else if (jenis.equals("Sepatu Sekolah")) {
+                        sepatuSekolahRadioButton.setSelected(true);
+                    }
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -121,6 +150,10 @@ public class SepatuInputFrame extends JFrame {
         } catch (SQLException ex){
             throw new RuntimeException(ex);
   }
+        jenisButtonGrup = new ButtonGroup();
+        jenisButtonGrup.add(sepatuFutsalRadioButton);
+        jenisButtonGrup.add(sepatuRunningRadioButton);
+        jenisButtonGrup.add(sepatuSekolahRadioButton);
 }
     public void init(){
         setContentPane(mainPanel);
