@@ -59,23 +59,38 @@ public class SepatuViewFrame extends JFrame {
             SepatuInputFrame inputFrame = new SepatuInputFrame();
             inputFrame.setVisible(true);
         });
-
+        ubahButton.addActionListener(e -> {
+            int barisTerpilih = viewTable.getSelectedRow();
+            if(barisTerpilih < 0){
+                JOptionPane.showMessageDialog(null,"Pilih data dulu");
+                return;
+            }
+                });
         cariButton.addActionListener(e -> {
+            if(cariTextField.getText().equals("")){
+                JOptionPane.showMessageDialog(null,
+                        "Isi kata kunci pencarian","Validasi kata kunci kosong",JOptionPane.WARNING_MESSAGE);
+                cariTextField.requestFocus();
+                return;
+                }
             Connection c = Koneksi.getConnection();
             String keyword = "%" + cariTextField.getText() + "%";
-            String searchSQL = "SELECT * K.*,B.nama AS nama_brandsepatu " +" FROM sepatu K " + "LEFT JOIN sepatu B ON K.kode_brand = B.kode_brand " + "WHERE K.nama like ?";
+            String searchSQL = "SELECT * FROM sepatu WHERE nama like?";
             try {
                 PreparedStatement ps = c.prepareStatement(searchSQL);
                 ps.setString(1, keyword);
                 ResultSet rs = ps.executeQuery();
                 DefaultTableModel dtm = (DefaultTableModel) viewTable.getModel();
                 dtm.setRowCount(0);
-                Object[] row = new Object[4];
+                Object[] row = new Object[7];
                 while (rs.next()) {
                     row[0] = rs.getInt("kode");
                     row[1] = rs.getString("nama");
-                    row[2] = rs.getString("nama_brandsepatu");
+                    row[2] = rs.getString("kode_brand");
                     row[3] = rs.getString("jenis");
+                    row[4] = rs.getString("ukuran");
+                    row[5] = rs.getString("warna");
+                    row[6] = rs.getString("harga");
                     dtm.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -98,7 +113,7 @@ public class SepatuViewFrame extends JFrame {
                 TableModel tm = viewTable.getModel();
                 int kode = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
                 Connection c = Koneksi.getConnection();
-                String deleteSQL = "DELETE FROM brand WHERE kode = ?";
+                String deleteSQL = "DELETE FROM sepatu WHERE kode = ?";
                 try {
                     PreparedStatement ps = c.prepareStatement(deleteSQL);
                     ps.setInt(1, kode);
@@ -129,16 +144,19 @@ public class SepatuViewFrame extends JFrame {
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String[] header = {"kode", "Nama Sepatu", "Nama Brand Sepatu", "Jenis Sepatu"};
+            String[] header = {"kode", "Nama Sepatu", "Nama Brand Sepatu", "Jenis Sepatu", "Ukuran", "Warna", "Harga"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
             viewTable.getColumnModel().getColumn(0).setMaxWidth(32);
-            Object[] row = new Object[4];
+            Object[] row = new Object[7];
             while (rs.next()) {
                 row[0] = rs.getInt("kode");
                 row[1] = rs.getString("nama");
                 row[2] = rs.getString("nama_brandsepatu");
                 row[3] = rs.getString("jenis");
+                row[4] = rs.getString("ukuran");
+                row[5] = rs.getString("warna");
+                row[6] = rs.getString("harga");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {

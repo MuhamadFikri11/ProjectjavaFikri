@@ -13,12 +13,27 @@ public class SepatuInputFrame extends JFrame {
     private JPanel buttonPanel;
     private JButton batalButton;
     private JButton simpanButton;
+
+    private JButton ubahButton;
+
+    private  JButton cariButton;
     private JComboBox brandComboBox;
     private JRadioButton sepatuFutsalRadioButton;
     private JRadioButton sepatuRunningRadioButton;
     private JRadioButton sepatuSekolahRadioButton;
+    private JTextField hargaTextField;
+    private JRadioButton uk39RadioButton;
+    private JRadioButton uk40RadioButton;
+    private JRadioButton uk41RadioButton;
+    private JRadioButton uk42RadioButton;
+    private JRadioButton putihRadioButton;
+    private JRadioButton hitamRadioButton;
+    private JRadioButton merahRadioButton;
+    private JRadioButton biruRadioButton;
 
     private ButtonGroup jenisButtonGrup;
+    private ButtonGroup ukuranButtonGrup;
+    private ButtonGroup warnaButtonGrup;
 
     private int kode;
     public void setId(int kode){
@@ -37,23 +52,56 @@ public class SepatuInputFrame extends JFrame {
                         namaTextField.requestFocus();
                         return;
                     }
-            ComboBoxItem item = (ComboBoxItem) brandComboBox.getSelectedItem();
-            int kodeBrand = item.getValue();
-            if (kodeBrand == 0) {
-                JOptionPane.showMessageDialog(null, "Pilih Brand", "Validasi ComboBox", JOptionPane.WARNING_MESSAGE);
-                brandComboBox.requestFocus();
+                    ComboBoxItem item = (ComboBoxItem) brandComboBox.getSelectedItem();
+                    int kodeBrand = item.getValue();
+                    if (kodeBrand == 0) {
+                        JOptionPane.showMessageDialog(null, "Pilih Brand", "Validasi ComboBox", JOptionPane.WARNING_MESSAGE);
+                        brandComboBox.requestFocus();
+                        return;
+                    }
+
+                    String jenis = "";
+                    if (sepatuFutsalRadioButton.isSelected()) {
+                        jenis = "Sepatu Futsal";
+                    } else if (sepatuRunningRadioButton.isSelected()) {
+                        jenis = "Sepatu Running";
+                    } else if (sepatuSekolahRadioButton.isSelected()) {
+                        jenis = "Sepatu Sekolah";
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Pilih Jenis Sepatu", "Validasi Kosong", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+            String ukuran = "";
+            if(uk39RadioButton.isSelected()){
+                ukuran = "39";
+            } else if (uk40RadioButton.isSelected()) {
+                ukuran = "40";
+            } else if (uk41RadioButton.isSelected()) {
+                ukuran = "41";
+            } else if (uk42RadioButton.isSelected()) {
+                ukuran = "42";
+            } else{
+                JOptionPane.showMessageDialog(null,"Pilih Ukuran Sepatu","Validasi Kosong",JOptionPane.WARNING_MESSAGE);
+                return;
+                }
+            String warna = "";
+            if(putihRadioButton.isSelected()){
+                warna = "Putih";
+            } else if (hitamRadioButton.isSelected()) {
+                warna = "Hitam";
+            } else if (merahRadioButton.isSelected()) {
+                warna = "Merah";
+            } else if (biruRadioButton.isSelected()) {
+                warna = "Biru";
+
+            } else{
+                JOptionPane.showMessageDialog(null,"Pilih Warna Sepatu","Validasi Kosong",JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            String jenis = "";
-            if(sepatuFutsalRadioButton.isSelected()){
-                jenis = "Sepatu Futsal";
-            } else if (sepatuRunningRadioButton.isSelected()) {
-                jenis = "Sepatu Running";
-            } else if (sepatuSekolahRadioButton.isSelected()) {
-                jenis = "Sepatu Sekolah";
-            }
-            else{
-                JOptionPane.showMessageDialog(null,"Pilih Jenis Sepatu","Validasi Kosong",JOptionPane.WARNING_MESSAGE);
+            String harga = hargaTextField.getText();
+            if (harga.equals("")) {
+                JOptionPane.showMessageDialog(null, "Isi Harga Sepatu", "Validasi kata kunci kosong", JOptionPane.WARNING_MESSAGE);
+                hargaTextField.requestFocus();
                 return;
             }
             Connection c = Koneksi.getConnection();
@@ -67,11 +115,15 @@ public class SepatuInputFrame extends JFrame {
                     if (rs.next()) {
                         JOptionPane.showMessageDialog(null, "Data sama sudah ada");
                     } else {
-                        String insertSQL = "INSERT INTO sepatu (kode,nama,kode_brand,jenis) " + "VALUES (NULL, ?,?, ?)";
+                        String insertSQL = "INSERT INTO sepatu (kode, nama, kode_brand, jenis, ukuran, warna, harga) " +
+                                "VALUES (NULL,?,?,?,?,?,?)";
                         ps = c.prepareStatement(insertSQL);
                         ps.setString(1, nama);
                         ps.setInt(2,kodeBrand);
                         ps.setString(3,jenis);
+                        ps.setString(4,ukuran);
+                        ps.setString(5,warna);
+                        ps.setString(6,harga);
                         ps.executeUpdate();
                         dispose();
                     }
@@ -85,12 +137,16 @@ public class SepatuInputFrame extends JFrame {
                     if (rs.next()) {
                         JOptionPane.showMessageDialog(null, "Data sama sudah ada");
                     } else {
-                        String updateSQL = "UPDATE sepatu SET nama= ?, kode_brand = ?, jenis = ?" + "WHERE kode= ?";
+                        String updateSQL = "UPDATE sepatu SET nama= ?, kode_brand = ?, jenis = ?, ukuran = ?, warna = ?, harga = ?" + "WHERE kode= ?";
                         ps = c.prepareStatement(updateSQL);
                         ps.setString(1, nama);
                         ps.setInt(2, kodeBrand);
                         ps.setString(3, jenis);
-                        ps.setInt(4, kode);
+                        ps.setString(4, ukuran);
+                        ps.setString(5, warna);
+                        ps.setString(6, harga);
+
+                        ps.setInt(7, kode);
                         ps.executeUpdate();
                         dispose();
                     }
@@ -98,7 +154,9 @@ public class SepatuInputFrame extends JFrame {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+
         });
+
         kustomisasiKomponen();
         init();
     }
@@ -114,6 +172,7 @@ public class SepatuInputFrame extends JFrame {
             if (rs.next()) {
                 kodeTextField.setText(String.valueOf(rs.getInt("kode")));
                 namaTextField.setText(rs.getString("nama"));
+                hargaTextField.setText(rs.getString("harga"));
                 int kodeBrand = rs.getInt("kode_brand");
                 for (int i = 0; i < brandComboBox.getItemCount(); i++) {
                     brandComboBox.setSelectedIndex(i);
@@ -130,6 +189,30 @@ public class SepatuInputFrame extends JFrame {
                         sepatuRunningRadioButton.setSelected(true);
                     } else if (jenis.equals("Sepatu Sekolah")) {
                         sepatuSekolahRadioButton.setSelected(true);
+                    }
+                    String ukuran = rs.getString( "ukuran");
+                    if(ukuran !=null) {
+                        if (ukuran.equals("39")) {
+                            uk39RadioButton.setSelected(true);
+                        } else if (ukuran.equals("40")) {
+                            uk40RadioButton.setSelected(true);
+                        } else if (ukuran.equals("41")) {
+                            uk41RadioButton.setSelected(true);
+                        } else if (ukuran.equals("42")) {
+                            uk42RadioButton.setSelected(true);
+                        }
+                        String warna = rs.getString( "warna");
+                        if(warna !=null) {
+                            if (warna.equals("Putih")) {
+                                putihRadioButton.setSelected(true);
+                            } else if (warna.equals("Hitam")) {
+                                hitamRadioButton.setSelected(true);
+                            } else if (warna.equals("Merah")) {
+                                merahRadioButton.setSelected(true);
+                            } else if (warna.equals("Biru")) {
+                                biruRadioButton.setSelected(true);
+                            }
+                        }
                     }
                 }
             }
@@ -154,6 +237,18 @@ public class SepatuInputFrame extends JFrame {
         jenisButtonGrup.add(sepatuFutsalRadioButton);
         jenisButtonGrup.add(sepatuRunningRadioButton);
         jenisButtonGrup.add(sepatuSekolahRadioButton);
+
+        ukuranButtonGrup = new ButtonGroup();
+        ukuranButtonGrup.add(uk39RadioButton);
+        ukuranButtonGrup.add(uk40RadioButton);
+        ukuranButtonGrup.add(uk41RadioButton);
+        ukuranButtonGrup.add(uk42RadioButton);
+
+        warnaButtonGrup = new ButtonGroup();
+        warnaButtonGrup.add(putihRadioButton);
+        warnaButtonGrup.add(hitamRadioButton);
+        warnaButtonGrup.add(merahRadioButton);
+        warnaButtonGrup.add(biruRadioButton);
 }
     public void init(){
         setContentPane(mainPanel);
